@@ -4,13 +4,11 @@ const express = require( 'express' );
 const app = express();
 const bodyParser = require( 'body-parser' );
 
-var msg;
 
-app.use( bodyParser.text( { type : 'text/plain' } ) );
+app.use( bodyParser.json( { type: 'application/json' } ) );
 
 
 app.post( '/message', function ( req, res ) {
-  msg = req.body;
 
   var blacklist = {
     'selfie' : 'self-portrait',
@@ -24,7 +22,11 @@ app.post( '/message', function ( req, res ) {
     'yolo' : 'carpe diem'
   };
 
-  res.send( 'Testes, testes, one...two...three?' );
+
+  for( var keys in blacklist ) {
+    req.body.message = req.body.message.replace( keys, blacklist[keys] );
+  }
+  res.send( req.body.message );
 });
 
 var server = app.listen( 7777, function () {
